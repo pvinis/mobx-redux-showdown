@@ -9,21 +9,28 @@ class ValueSetDisplay extends React.Component {
         code: PropTypes.string.isRequired,
     }
 
+    componentDidMount() {
+        this.rxsub = this.props.requiredToObserve.subscribe()
+    }
+  
+    componentWillUnmount() {
+        this.rxsub.unsubscribe()
+    }
+    
     render () {
+        const { isLoading, error, code, display } = this.props
 
-        const { ValueSetStore, valueSet, code } = this.props
-
-        if (ValueSetStore.isLoading(valueSet)) {
+        if (isLoading) {
             return <div>Loading...</div>
         }
 
-        if (ValueSetStore.error) {
-            return <div>Error: {JSON.stringify(ValueSetStore.error)}</div>
+        if (error) {
+            return <div>Error: {JSON.stringify(error)}</div>
         }
 
         return (
             <div>Display for <b>{code}</b> is:
-                <b>{ValueSetStore.display({valueSet, code}) || '-'}</b>
+                <b>{display || '-'}</b>
             </div>
         )
     }
